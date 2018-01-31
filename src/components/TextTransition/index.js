@@ -22,7 +22,6 @@ class TextTransition extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      textCenter: 0,
       textSize: 0,
       letters: []
     };
@@ -32,7 +31,13 @@ class TextTransition extends React.Component {
     return this.props !== nextProps || this.state !== nextState;
   }
 
-  componentWillReceiveProps(nextProps) {}
+  componentDidMount() {
+    
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('text-transition width: ' + this.container.offsetWidth);
+  }
 
   getDimensions() {
     let { width, height } = this.props;
@@ -50,7 +55,7 @@ class TextTransition extends React.Component {
     let { text } = this.props;
     const dimensionsStyles = this.getDimensions();
     return (
-      <div className="text-transition" style={dimensionsStyles}>
+      <div className="text-transition" style={dimensionsStyles} ref={(e) => {this.container = e;}}>
         <p className="text-transition-offScreenText">
           {text.split('').map((c, i) => (
             <span key={`${i}`}>{c}</span>
