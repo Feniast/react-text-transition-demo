@@ -1,0 +1,29 @@
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+
+html {
+  height: 100%; }
+
+body {
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center; }
+.text-transition {
+  position: relative; }
+
+.text-transition-offScreenText {
+  display: block;
+  position: absolute;
+  top: -9999px;
+  margin: 0;
+  width: 100%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  text-align: center; }
