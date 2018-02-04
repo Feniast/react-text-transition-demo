@@ -3,23 +3,32 @@ import './css/styles.scss';
 
 import TextTransition from './components/TextTransition';
 
+const TEXT = 'Hello, I\'m Tang';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.tId = null;
     this.state = {
-      text: 'Hello World'
+      i: 0
     };
+  }
 
+  componentDidMount() {
+    this.updateText();
+  }
+
+  updateText() {
+    if(this.state.i === TEXT.length) return;
+    this.setState((prevState) => ({i: prevState.i + 1}));
     setTimeout(() => {
-      this.setState({
-        text: 'Hello Tang'
-      });
-    }, 5000);
+      this.updateText();
+    }, 200);
   }
 
   render() {
     return (
-      <TextTransition text={this.state.text} width="800px"></TextTransition>
+      <TextTransition text={TEXT.slice(0, this.state.i)} width="800px"></TextTransition>
     );
   }
 }

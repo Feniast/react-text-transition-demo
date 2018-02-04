@@ -24,6 +24,17 @@ body {
   top: -9999px;
   margin: 0;
   width: 100%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
   text-align: center; }
+
+.text-transition-onScreenText {
+  position: absolute;
+  display: block;
+  margin: 0;
+  width: 100%;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%); }
+
+.text-transition-letter {
+  position: absolute;
+  opacity: 0; }

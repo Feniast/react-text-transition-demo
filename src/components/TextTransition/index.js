@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactResizeDetector from "react-resize-detector";
 import PropTypes from 'prop-types';
+import { TransitionGroup } from "react-transition-group";
 
 import {isNumeric} from 'js/util';
 
@@ -21,10 +22,28 @@ class TextTransition extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      textSize: 0,
-      letters: []
-    };
+    this.init(props);
+  }
+
+  init(props) {
+    this.state = { ready: false, textSize: 0, letters: [] };
+  }
+
+  getLetters(text) {
+    text = (text || '').trim();
+    if(text.length === 0) return [];
+    return text.split('').map((c, i) => {
+      const color = this.getColor(i);
+      return {
+        char: c,
+        idx: i,
+        color
+      };
+    });
+  }
+
+  getColor(idx) {
+    return TextTransition.colors[idx % TextTransition.colors.length];
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -32,14 +51,34 @@ class TextTransition extends React.Component {
   }
 
   componentDidMount() {
-    
+    this.updateState();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('text-transition width: ' + this.container.offsetWidth);
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.width !== this.props.width || prevProps.text !== this.props.text) { // need update state
+      this.updateState();
+    } 
   }
 
-  getDimensions() {
+  updateState() {
+    const width = this.container.offsetWidth;
+    let letters = this.getLetters(this.props.text);
+    const letterLength = letters.length;
+    let textSize = width / (letterLength + 2);
+    textSize = Math.min(textSize, 100);
+    //set and compute pos
+    this.offScreenText.style.fontSize = textSize + "px";
+    letters = letters.map((l, i) => {
+      if (this.offScreenText.childNodes[i]) {
+        let left = this.offScreenText.childNodes[i].offsetLeft;
+        l.x = left;
+        return l;
+      }
+    });
+    this.setState({ ready: true, textSize, letters });
+  }
+
+  getDimensionStyle() {
     let { width, height } = this.props;
     width = isNumeric(width) ? width + "px" : width;
     height = isNumeric(height) ? height + "px" : height;
@@ -51,21 +90,36 @@ class TextTransition extends React.Component {
     };
   }
 
+  getOnScreenTextStyle() {
+    const { textSize } = this.state;
+    return {
+      fontSize: textSize + 'px',
+      lineHeight: textSize + 'px'
+    };
+  }
+
   render() {
     let { text } = this.props;
-    const dimensionsStyles = this.getDimensions();
+    let { letters, textSize } = this.state;
+    const dimensionsStyles = this.getDimensionStyle();
+    const offScreenText = (
+      <p className="text-transition-offScreenText" ref={(e) => {this.offScreenText = e;}}>
+        {text.split('').map((c, i) => (
+          <span key={`${i}`}>{c}</span>
+        ))}
+      </p>
+    );
+    const onScreenText = this.state.ready ? (
+      <TransitionGroup component='p' className="text-transition-onScreenText" style={this.getOnScreenTextStyle()}>
+        {this.state.letters.map((l, i) => (
+        <TextTransitionLetter {...l} key={`${i}`} textSize={textSize}></TextTransitionLetter>
+        ))}
+      </TransitionGroup>
+    ) : undefined;
     return (
       <div className="text-transition" style={dimensionsStyles} ref={(e) => {this.container = e;}}>
-        <p className="text-transition-offScreenText">
-          {text.split('').map((c, i) => (
-            <span key={`${i}`}>{c}</span>
-          ))}
-        </p>
-        <p className="text-transition-onScreenText">
-          {text.split('').map((c, i) => (
-          <TextTransitionLetter char={c} key={`${i}`} color="#f00"></TextTransitionLetter>
-          ))}
-        </p>
+        {offScreenText}
+        {onScreenText}
       </div>
     );
   }
