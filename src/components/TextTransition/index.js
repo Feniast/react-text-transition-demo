@@ -64,7 +64,7 @@ class TextTransition extends React.Component {
     const width = this.container.offsetWidth;
     let letters = this.getLetters(this.props.text);
     const letterLength = letters.length;
-    let textSize = width / (letterLength + 2);
+    let textSize = ~~(width / (letterLength + 2));
     textSize = Math.min(textSize, 100);
     //set and compute pos
     this.offScreenText.style.fontSize = textSize + "px";
@@ -94,7 +94,8 @@ class TextTransition extends React.Component {
     const { textSize } = this.state;
     return {
       fontSize: textSize + 'px',
-      lineHeight: textSize + 'px'
+      lineHeight: textSize + 'px',
+      height: textSize + 'px'
     };
   }
 
