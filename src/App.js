@@ -23,7 +23,7 @@ class App extends React.Component {
     this.setState((prevState) => ({i: prevState.i + 1}));
     setTimeout(() => {
       this.updateText();
-    }, 200);
+    }, 300);
   }
 
   render() {

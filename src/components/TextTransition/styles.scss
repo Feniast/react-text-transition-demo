@@ -20,8 +20,21 @@
   transform: translateY(-50%);
 }
 
+.text-transition-letter-wrapper {
+  position: absolute;  
+}
 
 .text-transition-letter {
-  position: absolute;
+  display: inline-block;
   opacity: 0;
+}
+
+.text-transition-deco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1em;
+  height: 1em;
+  overflow: initial;
 }
